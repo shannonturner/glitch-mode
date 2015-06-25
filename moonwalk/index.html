@@ -431,7 +431,7 @@ setTimeout(function() {
         '264 BAD_HEAP_PTR invalid BINTABLE heap pointer is out of range',
         
         '306 Runtime Error Received NEG_BYTES from communications uplink (−2^1024)',
-        '307 BAD_ROW_NUM illegal starting row number in table (&#932;)',
+        '307 BAD_ROW_NUM illegal starting row number in table (&#8734;)',
         '308 BAD_ELEM_NUM illegal starting element number in vector',
         '320 BAD_DIMEN illegal number of dimensions in array',
         '323 NEG_AXIS illegal axis length (-10^100^100)',
@@ -478,7 +478,7 @@ setTimeout(function() {
 
     // Cycles through different alert texts
     setInterval(function() {
-        $("#alert-text").text(alerts[Math.floor(Math.random() * alerts.length)]);
+        $("#alert-text").html(alerts[Math.floor(Math.random() * alerts.length)]);
     }, 9000);
 }, 3000);
 
