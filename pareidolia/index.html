@@ -1,0 +1,644 @@
+<html>
+<head>
+
+    <title>pareidolia</title>
+    
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Art project by Shannon Turner. We are wired to see significance in the meaningless; to find patterns in noise.">
+
+    <!-- Facebook -->
+    <meta property="og:title" content="Pareidolia">
+    <meta property="og:site_name" content="shannonvturner.com">
+    <meta property="og:url" content="http://shannonvturner.com/glitch/pareidolia">
+    <meta property="og:description" content="Art project by Shannon Turner. We are wired to see significance in the meaningless; to find patterns in noise.">
+    <meta property="og:image" content="http://shannonvturner.com/glitch/pareidolia/images/pareidolia.png">
+
+    <!-- Twitter card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="http://shannonvturner.com/glitch/pareidolia">
+    <meta name="twitter:creator" content="@svt827">
+    <meta name="twitter:title" content="Pareidolia">
+    <meta name="twitter:description" content="Art project by Shannon Turner. We are wired to see significance in the meaningless; to find patterns in noise.">
+    <meta name="twitter:image:src" content="http://shannonvturner.com/glitch/pareidolia/images/pareidolia.png">
+
+    <link rel="icon" href="http://shannonvturner.com/favicon.ico">
+    <link href='http://fonts.googleapis.com/css?family=Cutive+Mono' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+
+<style>
+
+    body {
+        background: black;
+        overflow: hidden;
+        font-family: 'Cutive Mono';
+    }
+    #pareidolia {
+        width: 90%;
+    }
+    .row {
+        display: flex;
+    }
+    .pixel {
+        width: 3px;
+        height: 3px;
+        margin: 1px;
+    }
+    .dot {
+        border: 1px;
+        border-radius: 50%  
+    }
+    .no-margin {
+        margin: 0 !important;
+        width: 5px;
+        height: 5px;
+    }
+    #newmode {
+        background: black;
+        text-align: center;
+        color: #66ccff;
+        position: fixed;
+        top: 65%;
+        width: 100%;
+        padding: 1em;
+        display: none;
+    }
+    .modal-title {
+        text-transform: uppercase;
+    }
+    .modal-dialog {
+        width: 90%;
+        color: #66ccff;
+    }
+    .modal-content {
+        background-color: black;
+    }
+
+</style>
+
+<script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-49936574-1', 'shannonvturner.com');
+      ga('send', 'pageview');
+</script>
+
+</head>
+<body>
+
+<!-- 272 3x3 pixels per row -->
+
+<div id="pareidolia" class="container-fluid"> </div>
+
+<div id="newmode"> </div>
+
+<div class="modal fade" id="helpModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content text-center">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h2 class="modal-title">Pareidolia</h2>
+          <h4>We are wired to see significance in the meaningless; to find patterns in noise.</h4>
+        </div>
+        <div class="modal-body">
+            <h3>Press <u>any key A-Z</u> to change the static field.</h3>
+            <h3>Experiment, play around, try new combinations!</h3>
+            <br>
+            <br>
+            <h3>Press S to start or stop the animation.</h3>
+            <h3>Press M to turn on or off music.</h3>
+            <h3>Press H to bring up this help menu.</h3>
+        </div>
+        <div class="modal-footer">
+        </div>
+      </div>
+    </div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+<script>
+
+// First, create the canvas.
+var canvas = ""
+
+for (var rowX=0;rowX<150;rowX++) {
+    var row = ""
+    for (var pixX=0;pixX<272;pixX++) {
+        row += '<div class="pixel"> </div>';
+    }
+    canvas += '<div class="row">' + row + '</div>';
+}
+$("#pareidolia").html(canvas);
+delete canvas;
+delete row;
+
+
+var data = [];
+var rightData = [];
+var pixels = $("#pareidolia > .row > .pixel");
+var rgb = '';
+var changePixel = 0;
+var redOnly = false; // √
+var greenOnly = false; // √
+var blueOnly = false; // √
+var useColor = false; // √
+
+var autumnTime = false; // √
+var winterTime = false; // √
+var springTime = false; // √
+
+var nightTime = false; // √
+
+var powerOut = false; // √
+var lightsLow = false; // √
+var paused = false; // √
+
+var opacity = 1; // √
+var refreshRate = 450; // √ At 450, no scan-line effect will show.
+var deadPixels = 0; // √
+
+var newModeIsActive = false; // √
+
+var music = false;
+var playlist = [
+    'rev-hc.m4a',
+    'rev-papa.m4a',
+    'rev-s2h.m4a',
+    'rev-sotired.m4a',
+    'rev-number9.mp3',
+    // TODO: Add more
+];
+
+// Writes colors to all of the "pixels"
+newPattern = function() {    
+    newLine = '';
+    for (var x=0;x<272*refreshRate;x++) {
+        if (powerOut && Math.floor(Math.random() * 10 ) > 3) {
+            // Power outages sharply increase the chance of dark pixels
+            newHex = "00";
+        }
+        else if (lightsLow) {
+            newHex = Math.floor(Math.random() * 160).toString(16);
+        }
+        else {
+            newHex = Math.floor(Math.random() * 256).toString(16);
+        }
+        
+        // Zero-pad the hex values
+        if (newHex.length < 2) {
+            newHex = "0" + newHex;
+        }
+
+        // Used to create the pixelated "interpretation" of the hex values
+        if (useColor) {
+            rgb += newHex;
+        }
+        else {
+            rgb += newHex+newHex+newHex;
+        }
+
+        if (rgb.length == 6) {
+            if (redOnly) {
+                rgb = rgb.slice(0, 2) + "0000";
+            }
+            else if (greenOnly) {
+                rgb = "00" + rgb.slice(2, 4) + "00";
+            }
+            else if (blueOnly) {
+                rgb = "0000" + rgb.slice(4,6);
+            }
+            else if (autumnTime) {
+                rgb = rgb.slice(0, 4) + "00";
+            }
+            else if (winterTime) {
+                rgb = rgb.slice(0, 2) + "00" + rgb.slice(4, 6);
+            }
+            else if (springTime) {
+                rgb = "00" + rgb.slice(2, 6);
+            }
+            else if (nightTime) {
+                if (Math.floor(Math.random() * 1000) >= 998) {
+                    rgb = "ffffff";
+                }
+                else {
+                    rgb = "000000";
+                }
+            }
+            pixels[changePixel].style.background = "#" + rgb;
+            rgb = '';
+            changePixel += 1;
+        }
+
+        if (changePixel >= pixels.length) {
+            changePixel = 0;
+        }
+
+        newLine += newHex + " ";
+    }
+};
+
+newPattern();
+intervalID = setInterval(newPattern, 3000);
+
+newMode = function(text) {
+    if (!newModeIsActive) {
+        newModeIsActive = true;
+        $("#newmode").fadeIn(600);
+        $("#newmode").html("<h3>" + text + "</h3>");
+        $("#newmode").fadeOut(600, function() {
+            // Prevents tons of newModes() from showing when multiple keys are hit quickly
+            newModeIsActive = false;    
+        });
+    }
+}
+
+clearColorModes = function() {
+    redOnly = false;
+    greenOnly = false;
+    blueOnly = false;
+    autumnTime = false;
+    winterTime = false;
+    springTime = false;
+    nightTime = false;
+}
+
+$("#helpModal").modal('show');
+
+// Keyboard presses will toggle different modes
+document.addEventListener('keydown', function(event) {
+    if (event.keyCode == 67) {
+        // C was pressed
+        // Turn on color
+        if (!useColor) {
+            clearColorModes();
+            useColor = true;
+            newMode("C: Color mode ON");
+        }
+        else {
+            clearColorModes();
+            useColor = false;
+            newMode("C: Color mode OFF");
+        }
+        newPattern();
+    }
+    else if (event.keyCode == 82) {
+        // R was pressed
+        // Turn on color
+        // Only reds allowed
+        useColor = true;
+        if (!redOnly) {
+            clearColorModes();
+            redOnly = true;
+            newMode("R: Red mode ON");
+        }
+        else {
+            redOnly = false;
+            newMode("R: Red mode OFF");
+        }
+        newPattern();
+    }
+    else if (event.keyCode == 71) {
+        // G was pressed
+        // Turn on color
+        // Only greens allowed
+        useColor = true;
+        if (!greenOnly) {
+            clearColorModes();
+            greenOnly = true;
+            newMode("G: Green mode ON");
+        }
+        else {
+            greenOnly = false;
+            newMode("G: Green mode OFF");
+        }
+        newPattern();
+    }
+    else if (event.keyCode == 66) {
+        // B was pressed
+        // Turn on color
+        // Only blues allowed
+        useColor = true;
+        if (!blueOnly) {
+            clearColorModes();
+            blueOnly = true;
+            newMode("B: Blue mode ON");
+        }
+        else {
+            blueOnly = false;
+            newMode("B: Blue mode OFF");
+        }
+        newPattern();
+    }
+    else if (event.keyCode == 76) {
+        // L was pressed
+        // Dim the lights
+        if (!lightsLow) {
+            lightsLow = true;
+            powerOut = false;
+            newMode("L: Mood lighting ON");
+        }
+        else {
+            lightsLow = false;
+            newMode("L: Mood lighting OFF");
+        }
+        newPattern();
+    }
+    else if (event.keyCode == 80) {
+        // P was pressed
+        // Power out!
+        if (!powerOut) {
+            powerOut = true;
+            lightsLow = false;
+            newMode("P: Powersave ON");
+        }
+        else {
+            powerOut = false;
+            newMode("P: Powersave OFF");
+        }
+        newPattern();
+    }
+    else if (event.keyCode == 65) {
+        // A was pressed
+        // Turn on color
+        // Only RG allowed (autumnTime)
+        useColor = true;
+        if (!autumnTime) {
+            clearColorModes();
+            autumnTime = true;
+            newMode("A: Autumntime ON");
+        }
+        else {
+            autumnTime = false;
+            newMode("A: Autumntime OFF");
+        }
+        newPattern();
+    }
+    else if (event.keyCode == 87) {
+        // W was pressed
+        // Turn on color
+        // Only RB allowed (winterTime)
+        useColor = true;
+        if (!winterTime) {
+            clearColorModes();
+            winterTime = true;
+            newMode("W: Wintertime ON");
+        }
+        else {
+            winterTime = false;
+            newMode("W: Wintertime OFF");
+        }
+        newPattern();
+    }
+    else if (event.keyCode == 73) {
+        // I was pressed
+        // Turn on color
+        // Only GB allowed (springTime)
+        useColor = true;
+        if (!springTime) {
+            clearColorModes();
+            springTime = true;
+            newMode("I: Springtime ON");
+        }
+        else {
+            springTime = false;
+            newMode("I: Springtime OFF");
+        }
+        newPattern();
+    }
+    else if (event.keyCode == 78) {
+        // N was pressed
+        // >99% of pixels are black during nightTime
+        // <1% of pixels are white
+        if (!nightTime) {
+            clearColorModes();
+            nightTime = true;
+            newMode("N: Nighttime ON");
+        }
+        else {
+            nightTime = false;
+            newMode("N: Nighttime OFF");
+        }
+        newPattern();
+    }
+    else if (event.keyCode == 83) {
+        // S was pressed
+        // Stop / Start again
+        // Use to pause to see an image for longer
+        if (!paused) {
+            paused = true;
+            window.clearInterval(intervalID);
+            newMode("S: Stopped Animation");
+        }
+        else {
+            paused = false;
+            newMode("S: Starting Animation");
+            newPattern();
+            intervalID = setInterval(newPattern, 3000);
+        }
+    }
+    else if (event.keyCode == 77) {
+        // M was pressed
+        // Toggle music
+        if (!music) {
+            music = new Audio();
+            music.src = "music/" + playlist[0];
+            music.volume = .25;
+            music.play();
+
+            music.onended = function() {
+                justFinished = playlist.shift();
+                playlist.push(justFinished);
+                setTimeout(function() {
+                    // Wait 9 seconds before starting the next song
+                    music.src = "music/" + playlist[0];
+                    music.play();
+                }, 9000);
+            }
+
+            newMode("M: Music ON");
+        }
+        else {
+            music.pause();
+            music = false;
+            newMode("M: Music OFF");
+        }
+    }
+    else if (event.keyCode == 79) {
+        // O was pressed
+        // Adjust opacity
+        if (opacity >= 1) {
+            opacity = .25;
+        }
+        else {
+            opacity += .25;
+        }
+        $(".pixel").css("opacity", opacity);
+        newMode("O: Opacity set to " + (opacity * 100) + "%");
+    }
+    else if (event.keyCode == 70) {
+        // F was pressed
+        // Adjust refreshRate (scanlines)
+        if (refreshRate >= 450) {
+            refreshRate = 150;
+        }
+        else {
+            refreshRate += 150;
+        }
+        newMode("F: Refresh rate set to " + Math.round(refreshRate / 450 * 100) + "%");
+    }
+    else if (event.keyCode == 68) {
+        // D was pressed
+        // Toggle pixels into dots
+        $(".pixel").toggleClass("dot");
+        if ($(".pixel").hasClass("dot")) {
+            newMode("D: Dot mode ON");
+        }
+        else {
+            newMode("D: Dot mode OFF");
+        }
+    }
+    else if (event.keyCode == 81) {
+        // Q was pressed
+        // Toggle margin between pixels on/off
+        $(".pixel").toggleClass("no-margin");
+        if ($(".pixel").hasClass("no-margin")) {
+            newMode("Q: Pixel margins OFF");
+        }
+        else {
+            newMode("Q: Pixel margins ON");
+        }
+    }
+    else if (event.keyCode == 89) {
+        // Y was pressed
+        // Add a picture to the background (mars-face)
+        if ($("#pareidolia").css("background").indexOf("face-mars.png") > -1) {
+            $("#pareidolia").css("background", "#000000");
+            newMode("Y: Cydonia OFF");
+        }
+        else {
+            $("#pareidolia").css("background", "url(images/face-mars.png) no-repeat 50% 50%");
+            newMode("Y: Cydonia ON");
+        }
+    }
+    else if (event.keyCode == 85) {
+        // U was pressed
+        // Add a picture to the background (moon)
+        if ($("#pareidolia").css("background").indexOf("moon.png") > -1) {
+            $("#pareidolia").css("background", "#000000");
+            newMode("U: Moon OFF");
+        }
+        else {
+            $("#pareidolia").css("background", "url(images/moon.png) no-repeat 50% 50%");
+            newMode("U: Moon ON");
+        }
+    }
+    else if (event.keyCode == 69) {
+        // E was pressed
+        // Add a picture to the background (tree)
+        if ($("#pareidolia").css("background").indexOf("tree.png") > -1) {
+            $("#pareidolia").css("background", "#000000");
+            newMode("E: Tree OFF");
+        }
+        else {
+            $("#pareidolia").css("background", "url(images/tree.png) no-repeat 50% 50%");
+            newMode("E: Tree ON");
+        }
+    }
+    else if (event.keyCode == 84) {
+        // T was pressed
+        // Add a picture to the background (road)
+        if ($("#pareidolia").css("background").indexOf("road.png") > -1) {
+            $("#pareidolia").css("background", "#000000");
+            newMode("T: Road OFF");
+        }
+        else {
+            $("#pareidolia").css("background", "url(images/road.png) no-repeat 50% 50%");
+            newMode("T: Road ON");
+        }
+    }
+    else if (event.keyCode == 74) {
+        // J was pressed
+        // Add a picture to the background (clouds)
+        if ($("#pareidolia").css("background").indexOf("clouds.png") > -1) {
+            $("#pareidolia").css("background", "#000000");
+            newMode("J: Clouds OFF");
+        }
+        else {
+            $("#pareidolia").css("background", "url(images/clouds.png) no-repeat 50% 50%");
+            newMode("J: Clouds ON");
+        }
+    }
+    else if (event.keyCode ==90) {
+        // Z was pressed
+        // Add a picture to the background (landscape)
+        if ($("#pareidolia").css("background").indexOf("landscape.png") > -1) {
+            $("#pareidolia").css("background", "#000000");
+            newMode("Z: Landscape OFF");
+        }
+        else {
+            $("#pareidolia").css("background", "url(images/Landscape.png) no-repeat 50% 50%");
+            newMode("Z: Landscape ON");
+        }
+    }
+    else if (event.keyCode == 86) {
+        // V was pressed
+        // Add a picture to the background (tree)
+        if ($("#pareidolia").css("background").indexOf("waves.png") > -1) {
+            $("#pareidolia").css("background", "#000000");
+            newMode("V: Waves OFF");
+        }
+        else {
+            $("#pareidolia").css("background", "url(images/waves.png) no-repeat 50% 50%");
+            newMode("V: Waves ON");
+        }
+    }
+    else if (event.keyCode == 75) {
+        // K was pressed
+        // Add a picture to the background (lake)
+        if ($("#pareidolia").css("background").indexOf("lake.png") > -1) {
+            $("#pareidolia").css("background", "#000000");
+            newMode("K: Lake OFF");
+        }
+        else {
+            $("#pareidolia").css("background", "url(images/lake.png) no-repeat 50% 50%");
+            newMode("K: Lake ON");
+        }
+    }
+    else if (event.keyCode == 72) {
+        // H was pressed
+        // Show the help dialog
+        paused = true;
+        window.clearInterval(intervalID);
+        $("#helpModal").modal('show');
+    }
+    else if (event.keyCode == 88) {
+        // X was pressed
+        // Toggle pixels
+        deadPixels += 1;
+        if (deadPixels == 1) {
+            $("#pareidolia > .row > .pixel:nth-child(even)").css("opacity", 0);
+            newMode("X: Even pixels OFF");
+        }
+        else if (deadPixels == 2) {
+            $("#pareidolia > .row > .pixel:nth-child(even)").css("opacity", 1);
+            $("#pareidolia > .row > .pixel:nth-child(odd)").css("opacity", 0);
+            newMode("X: Odd pixels OFF");
+        }
+        else if (deadPixels == 3) {
+            deadPixels = 0;
+            $("#pareidolia > .row > .pixel").css("opacity", 1);
+            newMode("X: All pixels ON");
+        }
+
+    }
+});
+
+</script>
+
+</body>
+</html>
