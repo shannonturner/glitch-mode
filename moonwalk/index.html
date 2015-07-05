@@ -236,6 +236,12 @@ body {
     <div id="unglitched" class="img-div"> </div>
 </div>
 
+<audio id="ftl">
+    <!-- FTL Soundtrack available for purchase at https://benprunty.bandcamp.com/album/ftl -->
+    <!-- Used with author's permission -->
+  <source src="music/ftl/Ben Prunty Music - FTL - 01 Space Cruise (Title).mp3" type="audio/mpeg">
+</audio>
+
 <audio id="numbers">
   <source src="music/numbers/03 tcp d3 33 random pop irdial.mp3" type="audio/mpeg">
 </audio>
@@ -288,7 +294,25 @@ setInterval(function() {
         'background': nextGlitch
     });
     // TODO: Preload all images  (Maybe not, it would be 700MB now that there are 9 scenes.  Maybe before when there was just 1.)
-}, 800)
+}, 800);
+
+
+// Playlist control for Faster than Light
+var ftl = document.getElementById("ftl");
+ftl_playlist = ['Ben Prunty Music - FTL - 01 Space Cruise (Title).mp3 Ben Prunty Music - FTL - 12 Void (Explore).mp3', 'Ben Prunty Music - FTL - 02 MilkyWay (Explore).mp3', 'Ben Prunty Music - FTL - 03 Civil (Explore).mp3', 'Ben Prunty Music - FTL - 04 Cosmos (Explore).mp3', 'Ben Prunty Music - FTL - 05 Deepspace (Explore).mp3', 'Ben Prunty Music - FTL - 06 Debris (Explore).mp3', 'Ben Prunty Music - FTL - 07 Mantis (Explore).mp3', 'Ben Prunty Music - FTL - 08 Engi (Explore).mp3', 'Ben Prunty Music - FTL - 09 Colonial (Explore).mp3', 'Ben Prunty Music - FTL - 10 Wasteland (Explore).mp3', 'Ben Prunty Music - FTL - 11 Rockmen (Explore).mp3', 'Ben Prunty Music - FTL - 13 Zoltan (Explore).mp3', 'Ben Prunty Music - FTL - 14 BONUS Federation.mp3', 'Ben Prunty Music - FTL - 15 MilkyWay (Battle).mp3', 'Ben Prunty Music - FTL - 16 Civil (Battle).mp3', 'Ben Prunty Music - FTL - 17 Cosmos (Battle).mp3', 'Ben Prunty Music - FTL - 18 Deepspace (Battle).mp3', 'Ben Prunty Music - FTL - 19 Debris (Battle).mp3', 'Ben Prunty Music - FTL - 20 Mantis (Battle).mp3', 'Ben Prunty Music - FTL - 21 Engi (Battle).mp3', 'Ben Prunty Music - FTL - 22 Colonial (Battle).mp3', 'Ben Prunty Music - FTL - 23 Wasteland (Battle).mp3', 'Ben Prunty Music - FTL - 24 Rockmen (Battle).mp3', 'Ben Prunty Music - FTL - 25 Void (Battle).mp3', 'Ben Prunty Music - FTL - 26 Zoltan (Battle).mp3', 'Ben Prunty Music - FTL - 27 Last Stand.mp3', 'Ben Prunty Music - FTL - 28 Victory.mp3', 'Ben Prunty Music - FTL - 29 BONUS Horror.mp3']
+ftl.onended = function() {
+    song = ftl_playlist.shift();
+    console.log("Now playing " + ftl_playlist[0]);
+    ftl.src = "music/ftl/" + ftl_playlist[0];
+    ftl.play();
+    ftl_playlist.push(song);
+
+    var audio = new Audio();
+    audio.preload = "auto";
+    audio.src = ftl_playlist[1];
+
+}
+ftl.play();
 
 // Playlist control for Numbers stations
 var numbers = document.getElementById("numbers");
