@@ -22,6 +22,7 @@
     <meta name="twitter:title" content="Moonwalk">
     <meta name="twitter:description" content="Glitch art project by Shannon Turner; music is numbers stations collected by the Conet Project. Unglitched images courtesy of NASA.">
     <meta name="twitter:image:src" content="http://shannonvturner.com/glitch/moonwalk/images/4giantleap_a9s58i20c0z0.png">
+    <meta name="twitter:url" content="http://shannonvturner.com/glitch/moonwalk">
 
     <link rel="icon" href="http://shannonvturner.com/favicon.ico">
 
@@ -55,6 +56,15 @@ body {
     position: relative;
     top: 5%;
 }
+#last-alert {
+    position: relative;
+    top: 85%;
+}
+#last-alert-text {
+    color: red;
+    font-size: 150%;
+    font-family: monospace;
+}
 
 #data-left {
     position: fixed;
@@ -66,6 +76,10 @@ body {
     position: fixed;
     top: 10%;
     right: 5%;
+}
+
+.red {
+    color: red;
 }
 
 #static-left {
@@ -115,7 +129,11 @@ body {
 <body>
 
 <div id="alert">
-    <h4 id="alert-text" class="data-text">All systems online. Receiving live video uplink ...</h5>
+    <h4 id="alert-text" class="data-text">All systems online. Receiving live video uplink ...</h4>
+</div>
+
+<div id="last-alert">
+    <h4 id="last-alert-text" class="data-text"></h4>
 </div>
 
 <div id="data-left">
@@ -367,6 +385,11 @@ setInterval(function() {
             changeLeftPixel = 0;
         }
 
+        if (Math.floor(Math.random() * 256) >= 240) {
+            // In rare instances, turn the hex code red
+            newHex = '<b class="red">' + newHex + '</b>';
+        }
+
         newLine += newHex + " ";
     }
     newLine += "<br> <br>";
@@ -394,6 +417,12 @@ setInterval(function() {
         if (changeRightPixel >= rightPixels.length) {
             changeRightPixel = 0;
         }
+
+        if (Math.floor(Math.random() * 256) >= 240) {
+            // In rare instances, turn the hex code red
+            newHex = '<b class="red">' + newHex + '</b>';
+        }
+
         newLine += newHex + " ";
     }
     newLine += "<br> <br>";
@@ -406,6 +435,9 @@ setInterval(function() {
 
 // Waits 3 seconds for the communications to fail, then ...
 setTimeout(function() {
+    // Communications failure: messages are red
+    $("#alert-text").css("color", "red");
+
     // Alert text warp
     setInterval(function() {
         var scaleX = Math.random() + .2; // .2 - 1.2
@@ -502,6 +534,7 @@ setTimeout(function() {
 
     // Cycles through different alert texts
     setInterval(function() {
+        $("#last-alert-text").html($("#alert-text").text());
         $("#alert-text").html(alerts[Math.floor(Math.random() * alerts.length)]);
     }, 9000);
 }, 3000);
