@@ -44,7 +44,8 @@ body {
 }
 
 .bg-cover {
-    background-size: cover;
+    /*background-size: cover;*/
+    background-size: contain;
 }
 
 .img-div {
@@ -309,7 +310,8 @@ setInterval(function() {
     // When doing so, use the settings found in the filenames to re-create similar images
     var nextGlitch = 'url(images/' + glitches[imageGroup][Math.floor(Math.random() * glitches[imageGroup].length)] + ') 50% 50% no-repeat';
     $("#glitched").css({
-        'background': nextGlitch
+        'background': nextGlitch,
+        'background-size': 'contain'
     });
     // TODO: Preload all images  (Maybe not, it would be 700MB now that there are 9 scenes.  Maybe before when there was just 1.)
 }, 800);
@@ -327,7 +329,7 @@ ftl.onended = function() {
 
     var audio = new Audio();
     audio.preload = "auto";
-    audio.src = ftl_playlist[1];
+    audio.src = "music/ftl" + ftl_playlist[1];
 
 }
 ftl.play();
@@ -348,7 +350,10 @@ numbers.onended = function() {
     if (imageGroup >= glitches.length) {
         imageGroup = 0;
     }
-    $("#unglitched").css({'background': 'url(' + unglitchedImage[imageGroup] + ') 50% 50% no-repeat'});
+    $("#unglitched").css({
+        'background': 'url(' + unglitchedImage[imageGroup] + ') 50% 50% no-repeat',
+        'background-size': 'contain'
+    });
     // TODO: Pre-load next song
 }
 // Wait 3 seconds for the communications to fail before playing numbers stations
@@ -538,6 +543,16 @@ setTimeout(function() {
         $("#alert-text").html(alerts[Math.floor(Math.random() * alerts.length)]);
     }, 9000);
 }, 3000);
+
+// Dynamically size the images
+viewportWidth = window.innerWidth;
+viewportHeight = window.innerHeight;
+
+$(".img-div").css({
+    'height': viewportHeight * .9,
+    'width': 'auto',
+    'background-size': 'contain'
+});
 
 </script>
 
