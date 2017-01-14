@@ -11,21 +11,21 @@
     <!-- Facebook -->
     <meta property="og:title" content="Pareidolia">
     <meta property="og:site_name" content="shannonvturner.com">
-    <meta property="og:url" content="http://shannonvturner.com/glitch/pareidolia">
+    <meta property="og:url" content="https://shannonvturner.com/glitch/pareidolia">
     <meta property="og:description" content="Art project by Shannon Turner. We are wired to see significance in the meaningless; to find patterns in noise.">
-    <meta property="og:image" content="http://shannonvturner.com/glitch/pareidolia/images/pareidolia.png">
+    <meta property="og:image" content="https://shannonvturner.com/glitch/pareidolia/images/pareidolia.png">
 
     <!-- Twitter card -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:site" content="http://shannonvturner.com/glitch/pareidolia">
-    <meta name="twitter:creator" content="@svt827">
+    <meta name="twitter:site" content="https://shannonvturner.com/glitch/pareidolia">
+    <meta name="twitter:creator" content="@svthmc">
     <meta name="twitter:title" content="Pareidolia">
     <meta name="twitter:description" content="Art project by Shannon Turner. We are wired to see significance in the meaningless; to find patterns in noise.">
-    <meta name="twitter:image:src" content="http://shannonvturner.com/glitch/pareidolia/images/pareidolia.png">
-    <meta name="twitter:url" content="http://shannonvturner.com/glitch/pareidolia">
+    <meta name="twitter:image:src" content="https://shannonvturner.com/glitch/pareidolia/images/pareidolia.png">
+    <meta name="twitter:url" content="https://shannonvturner.com/glitch/pareidolia">
 
-    <link rel="icon" href="http://shannonvturner.com/favicon.ico">
-    <link href='http://fonts.googleapis.com/css?family=Cutive+Mono' rel='stylesheet' type='text/css'>
+    <link rel="icon" href="https://shannonvturner.com/favicon.ico">
+    <link href='https://fonts.googleapis.com/css?family=Cutive+Mono' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
 
 <style>
@@ -135,6 +135,8 @@ for (var rowX=0;rowX<150;rowX++) {
     canvas += '<div class="row">' + row + '</div>';
 }
 $("#pareidolia").html(canvas);
+canvas = 0;
+row = 0;
 delete canvas;
 delete row;
 
@@ -244,7 +246,7 @@ newPattern = function() {
 };
 
 newPattern();
-intervalID = setInterval(newPattern, 3000);
+intervalID = setInterval(newPattern, 1500);
 
 newMode = function(text) {
     if (!newModeIsActive) {
@@ -439,7 +441,7 @@ document.addEventListener('keydown', function(event) {
             paused = false;
             newMode("S: Starting Animation");
             newPattern();
-            intervalID = setInterval(newPattern, 3000);
+            intervalID = setInterval(newPattern, 1500);
         }
     }
     else if (event.keyCode == 77) {
